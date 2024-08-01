@@ -1,18 +1,20 @@
 #!/usr/bin/python3
-"""Lists all states from the DB."""
+"""
+Prints out all values in the states tables of a database
+where name matches the argument in a safe way
+"""
 
 
+import sys
 import MySQLdb
-from sys import argv
 
-if __name__ == "__main__":
-    db = MySQLdb.connect(host="localhost", port=3306, user=argv[1],
-                         passwd=argv[2], db=argv[3], charset="utf8")
+if __name__ == '__main__':
+    db = MySQLdb.connect(user=sys.argv[1], passwd=sys.argv[2],
+                         db=sys.argv[3], port=3306)
+
     cursor = db.cursor()
-    cursor.execute("SELECT * FROM states WHERE name LIKE %s ORDER BY id ASC",
-                   (argv[4],))
-    myli = cursor.fetchall()
-    for i in myli:
-        print(i)
-    cursor.close()
-    db.close()
+    cursor.execute("SELECT * FROM states WHERE name = %s;", (sys.argv[4],))
+    states = cursor.fetchall()
+
+    for state in states:
+        print(state)

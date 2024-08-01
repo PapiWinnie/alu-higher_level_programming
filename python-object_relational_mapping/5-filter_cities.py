@@ -1,20 +1,20 @@
 #!/usr/bin/python3
 """
-Lists all cities from the database hbtn_0e_4_usa
-with specified state name
+Program prints out all the cities of a state
 """
 
-import MySQLdb
-from sys import argv
 
-if __name__ == "__main__":
-    db = MySQLdb.connect(host="localhost", port=3306, user=argv[1],
-                         passwd=argv[2], db=argv[3], charset="utf8")
+import sys
+import MySQLdb
+
+if __name__ == '__main__':
+    db = MySQLdb.connect(user=sys.argv[1], passwd=sys.argv[2],
+                         db=sys.argv[3], port=3306)
+
     cursor = db.cursor()
-    cursor.execute("SELECT cities.name FROM cities \
-    JOIN states ON cities.state_id = states.id WHERE states.name LIKE %s \
-    ORDER BY cities.id", (argv[4],))
-    rows = cursor.fetchall()
-    print(", ".join(city[0] for city in rows))
-    cursor.close()
-    db.close()
+    cursor.execute("SELECT cities.id, cities.name, states.name \
+    FROM cities JOIN states ON cities.state_id = states.id \
+    WHERE states.name = '{}';".format(sys.argv[4]))
+    states = cursor.fetchall()
+
+    print(", ".join([state[1] for state in states]))

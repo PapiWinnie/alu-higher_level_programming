@@ -1,19 +1,30 @@
 #!/usr/bin/python3
-"""Script that takes in arguments."""
+"""Script that takes in an argument and
+displays all values in the states"""
 
 
-from sys import argv
+import sys
 import MySQLdb
 
+
 if __name__ == "__main__":
-    db = MySQLdb.connect(host="localhost", port=3306, user=argv[1],
-                         passwd=argv[2], db=argv[3], charset="utf8")
-    cursor = db.cursor()
-    cursor.execute("SELECT * FROM states WHERE name LIKE '{}' ORDER BY \
-            id ASC".format(argv[4]))
-    mylist = cursor.fetchall()
-    for i in mylist:
-        if i[1] == argv[4]:
-            print(i)
+    conn = MySQLdb.connect(
+        user=sys.argv[1],
+        password=sys.argv[2],
+        db=sys.argv[3],
+        host="localhost",
+        port=3306
+    )
+    cursor = conn.cursor()
+    sql = """ SELECT * FROM states
+        WHERE name LIKE BINARY '{}'
+        ORDER BY id ASC """.format(sys.argv[4])
+
+    cursor.execute(sql)
+    data = cursor.fetchall()
+
+    for row in data:
+        print(row)
+
     cursor.close()
-    db.close()
+    conn.close()
