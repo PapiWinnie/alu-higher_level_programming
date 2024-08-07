@@ -1,15 +1,17 @@
 #!/usr/bin/python3
 """
-   Import 'sys' & 'MySQLdb'
+Lists all cities of a particular state
 """
-import sys
 import MySQLdb
+import sys
 
-if __name__ == "__main__":
-    db = MySQLdb.connect(user=sys.argv[1], passwd=sys.argv[2], db=sys.argv[3])
-    c = db.cursor()
-    c.execute("SELECT * FROM `cities` as `c` \
-                INNER JOIN `states` as `s` \
-                   ON `c`.`state_id` = `s`.`id` \
-                ORDER BY `c`.`id`")
-    print(", ".join([ct[2] for ct in c.fetchall() if ct[4] == sys.argv[4]]))
+
+if __name__ == '__main__':
+    con = MySQLdb.connect(db=sys.argv[3], user=sys.argv[1], passwd=sys.argv[2])
+    with con.cursor() as cur:
+        """Used context manager to automatically close the cursor object"""
+        cur.execute('''SELECT cities.name FROM cities JOIN states ON
+                    states.id=cities.state_id
+                    WHERE states.name = %s;''', (sys.argv[4], ))
+        print(", ".join([row[0] for row in cur.fetchall()]))
+    con.close()
