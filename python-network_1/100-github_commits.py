@@ -3,7 +3,7 @@
 Usage: ./100-github_commits.py <repository name> <repository owner>
 """
 import sys
-import requests
+import requests  
 
 
 if __name__ == "__main__":
