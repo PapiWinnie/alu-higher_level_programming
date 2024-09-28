@@ -1,1 +1,1 @@
-This is the directory for javascript scripts
+This is the directory for javascript- warm up
