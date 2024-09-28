@@ -1,1 +1,1 @@
-this is the project directory for javascript
+project directory for javascript_object_constructors
