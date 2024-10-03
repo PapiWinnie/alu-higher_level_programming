@@ -1,1 +1,1 @@
-Project directory for web scraping
+Web-scraping project.

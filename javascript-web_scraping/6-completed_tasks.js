@@ -1,25 +1,40 @@
 #!/usr/bin/node
-// this script computes the number of tasks completed by user id
+// script computes the number of tasks completed by user id
+
 const request = require('request');
-const myArgs = process.argv.slice(2);
-const result = {};
-request(myArgs[0], function (err, response, body) {
-  if (err) {
-    console.log(err);
-  } else {
-    const JSONbody = JSON.parse(body);
-    let i = 0;
-    for (i = 0; i < JSONbody.length; i++) {
-      if (!(JSONbody[i].userId in result)) {
-        result[JSONbody[i].userId] = 0;
-      }
-      if (JSONbody[i].completed) {
-        result[JSONbody[i].userId] += 1;
-      }
-      if (result[JSONbody[i].userId] === 0) {
-        delete result[JSONbody[i].userId];
-      }
+
+if (process.argv.length > 2) {
+  const apiUrl = process.argv[2];
+  request.get(apiUrl, (error, response, body) => {
+    if (error) {
+      console.error(`An error occurred while making the request: ${error}`);
+      return;
     }
-    console.log(result);
-  }
-});
+
+    if (response.statusCode !== 200) {
+      console.error(`Error: ${response.statusCode} - ${response.statusMessage}`);
+      return;
+    }
+
+    try {
+      const tasks = JSON.parse(body);
+      const completedTasksByUser = {};
+
+      tasks.forEach(task => {
+        if (task.completed) {
+          if (completedTasksByUser[task.userId]) {
+            completedTasksByUser[task.userId]++;
+          } else {
+            completedTasksByUser[task.userId] = 1;
+          }
+        }
+      });
+
+      console.log(completedTasksByUser);
+    } catch (error) {
+      console.error(`An error occurred while parsing the response: ${error}`);
+    }
+  });
+} else {
+  console.log('Please provide the API URL as an argument.');
+}

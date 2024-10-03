@@ -1,9 +1,19 @@
 #!/usr/bin/node
-//string to a file
+// script writes a string to a file
 const fs = require('fs');
-const myArgs = process.argv.slice(2);
-fs.writeFile(myArgs[0], myArgs[1], function (err) {
-  if (err) {
-    console.log(err);
-  }
-});
+
+function writeFile (filePath, content) {
+  fs.writeFile(filePath, content, 'utf-8', (err) => {
+    if (err) {
+      console.error(`An error occurred while writing to the file: ${err}`);
+    }
+  });
+}
+
+if (process.argv.length > 3) {
+  const filePath = process.argv[2];
+  const content = process.argv[3];
+  writeFile(filePath, content);
+} else {
+  console.log('provide the file path and content as arguments.');
+}

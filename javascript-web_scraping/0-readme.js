@@ -1,11 +1,21 @@
 #!/usr/bin/node
-// this script reads and prints the content of a file
+// script reads and prints the content of a file
 const fs = require('fs');
-const myArgs = process.argv.slice(2);
-fs.readFile(myArgs[0], 'utf-8', function (err, data) {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log(data);
-  }
-});
+
+function readFile (filePath) {
+  fs.readFile(filePath, 'utf-8', (err, data) => {
+    if (err) {
+      console.error(`An error occurred while reading the file: ${err}`);
+    } else {
+      console.log(data);
+    }
+  });
+}
+
+// Check if the file path is provided as an argument
+if (process.argv.length > 2) {
+  const filePath = process.argv[2];
+  readFile(filePath);
+} else {
+  console.log('Please provide the file path as an argument.');
+}
